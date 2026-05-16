@@ -7,9 +7,10 @@ public class ModifiableTexture
     //pivot and pixels per unit define the sprite properties
     private Vector2 m_pivot;                
     private float m_pixelsPerUnit;
-    //creates a public Texture2D and Sprite that return the relative private variables
+    //creates a public Texture2D, Sprite, and Pivot that return the relative private variables
     public Texture2D Texture => m_texture;
     public Sprite Sprite => m_sprite;
+    public Vector2 Pivot => m_pivot;
 
     public static ModifiableTexture CreateFromSprite(Sprite sprite)
     {
@@ -97,5 +98,31 @@ public class ModifiableTexture
     {
         //sends texture data from CPU to GPU
         m_texture.Apply();
+    }
+
+    public bool[][] GetPixelsState()
+    {
+        //gets pixel dimensions form texture
+        int width = m_texture.width;
+        int height = m_texture.height;
+        Color[] data = m_texture.GetPixels();
+        //populates bool values from Color array 
+        bool[][] pixels = new bool[height][];
+        //runs loop for the dimension of texture height
+        for (int i = 0; i < height; i++)
+        {
+            //creates inner array within y pixel
+            pixels[i] = new bool[width];
+            //converts 1D array to 2D array
+            int row = i * width;
+            //runs loop for the dimension of texture width
+            for (int j = 0; j < width; j++)
+            {
+                //checks if the pixel is clear or not
+                pixels[i][j] = data[row + j].a > 0.5f;
+            }
+        }
+        //returns bool double array calculated
+        return pixels;
     }
 }
