@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,8 @@ public class DestructionTest : MonoBehaviour
     [SerializeField] private GameObject m_explosionEffect;
     //explosion area of effect
     [SerializeField, Min(0.1f)] private float m_radius;
+    
+    public static event Action onMissileLaunched;
 
     #region Click Explosion
     private void OnEnable()

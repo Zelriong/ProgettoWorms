@@ -22,10 +22,11 @@ public class ModifiableTexture
         //defines how the texture is viewed visually
         texture.filterMode = FilterMode.Point;          
         
-        //gets all the pixel colors
-        Color32[] pixels = sprite.texture.GetPixels32();
-        //sets the pixels colors to texture
-        texture.SetPixels32(pixels);
+        //gets all the pixels of 2D texture and stores it in an array
+        Color[] pixels = sprite.texture.GetPixels((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+        Debug.Log(pixels.Length);
+        //sets the pixels to the texture using the array of pixels obtained from the sprite
+        texture.SetPixels(pixels);
         //sends texture data from CPU to GPU
         texture.Apply();
 
