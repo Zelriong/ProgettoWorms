@@ -1,68 +1,93 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+
+public enum TurnState
+{
+    Preparing,
+    Firing,
+    Waiting
+}
 
 public class TurnManager : MonoBehaviour
 {
+    public TurnState turnState;
+
+    [SerializeField] private float delayAfterExplosion = 3f;
+
     [SerializeField] private GameObject[] p1Worms;
     [SerializeField] private GameObject[] p2Worms;
-    private Stack<GameObject> turnStack;
+    private Stack<GameObject> p1TurnStack;
+    private Stack<GameObject> p2TurnStack;
 
-    private int currentTurn = 0;
+    private int p1TurnIndex = 0;
+    private int p2TurnIndex = 0;
+    //since there is only 2 players, true will be p1's turn while false will be p2's turn
+    public bool isP1Turn = true;
+
+    public static event Action onNextTurn;
 
     private void OnEnable()
     {
-        DestructionTest.onMissileLaunched += UpdateTurn;
+        //occurs at end of Firing TurnState
+        DestructionTest.onMissileExplosion += OnExplosion;
+
+        //occurs when turn timer finishes
+        GameManager.onTurnTimerFinished += UpdateTurn;
     }
 
     private void OnDisable()
     {
-        DestructionTest.onMissileLaunched -= UpdateTurn;
+        DestructionTest.onMissileExplosion -= OnExplosion;
+
+        GameManager.onTurnTimerFinished -= UpdateTurn;
     }
     
     private void Start()
     {
-        turnStack = new Stack<GameObject>();
+        p1TurnStack = new Stack<GameObject>();
+        p2TurnStack = new Stack<GameObject>();
 
         FillTurnStack();
+
+        turnState = TurnState.Preparing;
     }
 
     private void FillTurnStack()
     {
-        if (p1Worms.Length < p2Worms.Length)
+        foreach (GameObject worms in p1Worms)
         {
-            for (int i = 0; i < p2Worms.Length; i++)
-            {
-                if (p1Worms.Length > i)
-                    turnStack.Push(p1Worms[i]);
-                
-                turnStack.Push(p2Worms[i]);
-            }
+            p1TurnStack.Push(worms);
         }
-        else if (p1Worms.Length > p2Worms.Length)
-        {
-            for (int i = 0; i < p1Worms.Length; i++)
-            {
-                turnStack.Push(p1Worms[i]);
 
-                if (p2Worms.Length > i)
-                    turnStack.Push(p2Worms[i]);
-            }
-        }
-        else
+        foreach (GameObject worms in p2Worms)
         {
-            for (int i = 0; i < p1Worms.Length; i++)
-            {
-                turnStack.Push(p1Worms[i]);
-                turnStack.Push(p2Worms[i]);
-            }
+            p2TurnStack.Push(worms);
         }
-        
-        Debug.Log(turnStack.Count);
+
+        Debug.Log(p1TurnStack.Count);
+        Debug.Log(p2TurnStack.Count);
+    }
+
+    private void OnExplosion()
+    {
+        turnState = TurnState.Waiting;
+
+        StartCoroutine(WaitAfterExplosion(delayAfterExplosion));
+    }
+
+    IEnumerator WaitAfterExplosion(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        UpdateTurn();
     }
 
     private void UpdateTurn()
     {
-        
+        isP1Turn = !isP1Turn;
+        turnState = TurnState.Preparing;
+        onNextTurn?.Invoke();
     }
 }
