@@ -1,0 +1,27 @@
+{
+    "name": "buildingvolumes.geometry_sequence_player",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Timeline",
+        "Unity.TextMeshPro",
+        "Unity.PolySpatial",
+        "Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary",
+        "Unity.Mathematics",
+        "Unity.Burst"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.shadergraph",
+            "expression": "13.0.0",
+            "define": "SHADERGRAPH_AVAILABLE"
+        }
+    ],
+    "noEngineReferences": false
+}

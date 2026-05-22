@@ -1,0 +1,70 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
+using UnityEngine;
+using UnityEngine.Playables;
+
+namespace BuildingVolumes.Player
+{
+    public class GeometrySequenceBehaviour : PlayableBehaviour
+    {
+        public string relativePath = "";
+        public string absolutePath = "";
+        public float targetPlaybackFPS = 30;
+        public GeometrySequenceStream.PathType pathRelation;
+        bool loadNewSequence = false;
+        bool streamIsReady = false;
+
+        public override void ProcessFrame(Playable playable, FrameData info, object playerData)
+        {
+            GeometrySequenceStream stream = playerData as GeometrySequenceStream;
+
+            if (stream == null)
+                return;
+
+            if (!Application.isPlaying)
+                return;
+
+            //Load our clip if it hasn't been loaded yet
+            if (loadNewSequence)
+            {
+                if (relativePath != string.Empty)
+                {
+                    streamIsReady = stream.ChangeSequence(absolutePath, targetPlaybackFPS);
+                }
+
+                loadNewSequence = false;
+            }
+
+            double currentTime = playable.GetTime<Playable>();
+
+            if (streamIsReady)
+                stream.UpdateFrame();
+        }
+
+        //Playback start
+        public override void OnBehaviourPlay(Playable playable, FrameData info)
+        {
+
+            //Set the correct absolute path depending on the files location
+            if (pathRelation == GeometrySequenceStream.PathType.RelativeToDataPath)
+                absolutePath = Path.Combine(Application.dataPath, relativePath);
+
+            if (pathRelation == GeometrySequenceStream.PathType.RelativeToStreamingAssets)
+                absolutePath = Path.Combine(Application.streamingAssetsPath, relativePath);
+
+            if (pathRelation == GeometrySequenceStream.PathType.RelativeToPersistentDataPath)
+                absolutePath = Path.Combine(Application.persistentDataPath, relativePath);
+
+            if (pathRelation == GeometrySequenceStream.PathType.AbsolutePath)
+                absolutePath = relativePath;
+
+            loadNewSequence = true;
+
+            base.OnBehaviourPlay(playable, info);
+        }
+    }
+}
+
