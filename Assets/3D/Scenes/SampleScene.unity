@@ -186,8 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: C:\Users\Laura\Documents\0_EVENT HORIZON\ANNO I\GAME LAB\Game lab
-    05\Asset\Ocean\3D\Mesh_2_Export\converted
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_2_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -277,8 +276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: C:\Users\Laura\Documents\0_EVENT HORIZON\ANNO I\GAME LAB\Game lab
-    05\Asset\Ocean\3D\Mesh_2_Export\converted
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_2_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -387,13 +385,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.0603, y: 1, z: -10.855}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 25.95, z: 51.1}
   m_LocalScale: {x: 1.1326, y: 1.1326, z: 1.1326}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -520,8 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: C:\Users\Laura\Documents\0_EVENT HORIZON\ANNO I\GAME LAB\Game lab
-    05\Asset\Ocean\3D\Mesh_1_Export\converted
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_1_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -723,7 +720,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: 
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_1_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -828,8 +825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: C:\Users\Laura\Documents\0_EVENT HORIZON\ANNO I\GAME LAB\Game lab
-    05\Asset\Ocean\3D\Mesh_2_Export\converted
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_2_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -919,8 +915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: C:\Users\Laura\Documents\0_EVENT HORIZON\ANNO I\GAME LAB\Game lab
-    05\Asset\Ocean\3D\Mesh_2_Export\converted
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_2_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -1092,8 +1087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: C:\Users\Laura\Documents\0_EVENT HORIZON\ANNO I\GAME LAB\Game lab
-    05\Asset\Ocean\3D\Mesh_1_Export\converted
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_1_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -1249,8 +1243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: C:\Users\Laura\Documents\0_EVENT HORIZON\ANNO I\GAME LAB\Game lab
-    05\Asset\Ocean\3D\Mesh_1_Export\converted
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_1_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -1373,8 +1366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: C:\Users\Laura\Documents\0_EVENT HORIZON\ANNO I\GAME LAB\Game lab
-    05\Asset\Ocean\3D\Mesh_1_Export\converted
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_1_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
@@ -1449,7 +1441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2731264125d1524693cb97001b1cfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
-  relativePath: 
+  relativePath: C:\GitHub\ProgettoWorms\Assets\3D\3D\Mesh_1_Export\converted
   pathRelation: 0
   playAtStart: 1
   loopPlay: 1
