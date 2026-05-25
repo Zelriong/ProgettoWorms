@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 595096167927243397}
   - component: {fileID: 5472073413455396599}
   - component: {fileID: 6927531627701023748}
-  - component: {fileID: 4506052871753381991}
+  - component: {fileID: 7452973349945644929}
   m_Layer: 0
   m_Name: ExplosionEffect
   m_TagString: Untagged
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 19.378, y: 9.156, z: 0}
-  m_LocalScale: {x: 7, y: 7, z: 7}
+  m_LocalScale: {x: 3.5, y: 3.5, z: 3.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -115,7 +115,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4506052871753381991
+--- !u!114 &7452973349945644929
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,6 +124,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8979316832891475537}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25317323a8f6cd44d82dc3d6b585b851, type: 3}
+  m_Script: {fileID: 11500000, guid: dd9909327dae8604abd46e387029ac6d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DestroyOnFinished
+  m_EditorClassIdentifier: Assembly-CSharp::DeactivateOnFinished

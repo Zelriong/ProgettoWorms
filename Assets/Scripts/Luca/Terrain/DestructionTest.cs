@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class DestructionTest : MonoBehaviour
 {
+    private ExplosionPooler explosionPooler;
+    
     //mouse inputs for getting click position and action
     [SerializeField] private InputActionReference m_pointerInput, m_clickInput;
     //reference to destructible terrain object
@@ -13,9 +15,17 @@ public class DestructionTest : MonoBehaviour
     //explosion area of effect
     [SerializeField, Min(0.1f)] private float m_radius;
 
+    [SerializeField] private float m_damage = 30f;
+    [SerializeField] private float m_knockbackPower = 10f;
+
     private bool canMakeAction = true;
     public static event Action onMissileExplosion;
 
+    private void Awake()
+    {
+        explosionPooler = FindAnyObjectByType<ExplosionPooler>();
+    }
+    
     #region Click Explosion
     private void OnEnable()
     {
@@ -43,16 +53,29 @@ public class DestructionTest : MonoBehaviour
         Debug.Log(worldPosition);
         //calls destructible terrain function to destroy terrain
         m_destructibleTerrain.DestroyTerrainAt(worldPosition, m_radius);
+        
+        #region Damage and Knockback
+        //overlap sphere at explosion center to damage worms
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(worldPosition, m_radius);
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.TryGetComponent(out IDamageable damageable))
+            {
+                Vector2 direction = (worldPosition - (Vector2)collider.transform.position).normalized;
+                damageable.TakeDamage(m_damage);
+                damageable.Knockback(direction, m_knockbackPower);
+            }
+        }
+        #endregion
 
         onMissileExplosion?.Invoke();
 
         //makes sure to go through the wait process before acting again
         canMakeAction = false;
 
-        if (m_explosionEffect == null)
+        if (explosionPooler == null)
             return;
-        //generates an explosion effect at clicked position
-        Instantiate(m_explosionEffect, worldPosition, Quaternion.identity);
+        explosionPooler.GetExplosion(worldPosition, Quaternion.identity);
     }
 
     private void ReactivateClick()
