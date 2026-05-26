@@ -16,8 +16,8 @@ public class TurnManager : MonoBehaviour
 
     [SerializeField] private float delayAfterExplosion = 3f;
 
-    [SerializeField] private GameObject[] p1Worms;
-    [SerializeField] private GameObject[] p2Worms;
+    public GameObject[] p1Worms;
+    public GameObject[] p2Worms;
     private List<GameObject> p1TurnList;
     private List<GameObject> p2TurnList;
 

@@ -13,7 +13,8 @@ public class DestructionTest : MonoBehaviour
     //(optional) explosion effect
     [SerializeField] private GameObject m_explosionEffect;
     //explosion area of effect
-    [SerializeField, Min(0.1f)] private float m_radius;
+    [SerializeField] private float m_destuctionRadius;
+    [SerializeField] private float m_damageRadius;
 
     [SerializeField] private float m_damage = 30f;
     [SerializeField] private float m_knockbackPower = 10f;
@@ -52,18 +53,21 @@ public class DestructionTest : MonoBehaviour
         Vector2 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
         Debug.Log(worldPosition);
         //calls destructible terrain function to destroy terrain
-        m_destructibleTerrain.DestroyTerrainAt(worldPosition, m_radius);
+        m_destructibleTerrain.DestroyTerrainAt(worldPosition, m_destuctionRadius);
         
         #region Damage and Knockback
         //overlap sphere at explosion center to damage worms
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(worldPosition, m_radius);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(worldPosition, m_damageRadius);
         foreach (Collider2D collider in colliders)
         {
             if (collider.TryGetComponent(out IDamageable damageable))
             {
                 Vector2 direction = (worldPosition - (Vector2)collider.transform.position).normalized;
-                damageable.TakeDamage(m_damage);
-                damageable.Knockback(direction, m_knockbackPower);
+                float distance = Vector2.Distance(worldPosition, collider.transform.position);
+                if (distance <= 1f)
+                    distance = 1f;
+                damageable.TakeDamage(m_damage, distance);
+                damageable.Knockback(direction, m_knockbackPower, distance);
             }
         }
         #endregion

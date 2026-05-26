@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -9,9 +10,10 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TMP_Text gameTimer;
     [SerializeField] private TMP_Text turnTimer;
-    [SerializeField] private Image p1Icon;
-    [SerializeField] private Image p2Icon;
+    [SerializeField] private Image p1HealthBar;
+    [SerializeField] private Image p2HealthBar;
 
+    [Header("Turn Indicator")]
     [SerializeField] private GameObject turnIndicator;
     [SerializeField] private Image turnIndicatorImage;
     [SerializeField] private float offsetFromPlayer = 2f;
@@ -28,6 +30,8 @@ public class UIManager : MonoBehaviour
     {
         GameManager.onGameTimerChange += UpdateGameTimer;
         GameManager.onTurnTimerChange += UpdateTurnTimer;
+        GameManager.onP1HealthUpdated += UpdateP1HealthBar;
+        GameManager.onP2HealthUpdated += UpdateP2HealthBar;
 
         //occurs at beginning of Firing TurnState
         DestructionTest.onMissileExplosion += DeactivateTurnTimer;      //to be changed to when missile is launched
@@ -41,12 +45,20 @@ public class UIManager : MonoBehaviour
     {
         GameManager.onGameTimerChange -= UpdateGameTimer;
         GameManager.onTurnTimerChange -= UpdateTurnTimer;
+        GameManager.onP1HealthUpdated -= UpdateP1HealthBar;
+        GameManager.onP2HealthUpdated -= UpdateP2HealthBar;
 
         //occurs at start of Firing TurnState
         DestructionTest.onMissileExplosion -= DeactivateTurnTimer;      //to be changed to when missile is launched
 
         //occurs at end of Waiting TurnState
         TurnManager.onTurnIndicatorChange -= UpdateTurnIndicator;
+    }
+
+    private void Start()
+    {
+        p1HealthBar.fillAmount = 1f;
+        p2HealthBar.fillAmount = 1f;
     }
 
     private void UpdateGameTimer(float timer)
@@ -74,19 +86,23 @@ public class UIManager : MonoBehaviour
         {
             turnIndicator.transform.position = new Vector2(position.x, position.y + offsetFromPlayer);
             turnIndicatorImage.color = Color.red;
-            
-            p1Icon.gameObject.SetActive(true);
-            p2Icon.gameObject.SetActive(false);
         }
         else
         {
             turnIndicator.transform.position = new Vector2(position.x, position.y + offsetFromPlayer);
             turnIndicatorImage.color = Color.blue;
-            
-            p1Icon.gameObject.SetActive(false);
-            p2Icon.gameObject.SetActive(true);
         }
 
         turnTimer.gameObject.SetActive(true);
+    }
+
+    private void UpdateP1HealthBar(float currentHealth, float maxHealth)
+    {
+        p1HealthBar.fillAmount = currentHealth / maxHealth;
+    }
+
+    private void UpdateP2HealthBar(float currentHealth, float maxHealth)
+    {
+        p2HealthBar.fillAmount = currentHealth / maxHealth;
     }
 }
