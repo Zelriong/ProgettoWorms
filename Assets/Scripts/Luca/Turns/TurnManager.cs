@@ -18,15 +18,23 @@ public class TurnManager : MonoBehaviour
 
     [SerializeField] private GameObject[] p1Worms;
     [SerializeField] private GameObject[] p2Worms;
-    private Stack<GameObject> p1TurnStack;
-    private Stack<GameObject> p2TurnStack;
+    private List<GameObject> p1TurnList;
+    private List<GameObject> p2TurnList;
 
     private int p1TurnIndex = 0;
     private int p2TurnIndex = 0;
     //since there is only 2 players, true will be p1's turn while false will be p2's turn
-    public bool isP1Turn = true;
+    private bool isP1Turn = true;
 
     public static event Action onNextTurn;
+    public static event Action<bool, Vector2> onTurnIndicatorChange;
+
+    private void Awake()
+    {
+        p1TurnList = new List<GameObject>();
+        p2TurnList = new List<GameObject>();
+        FillWormLists();
+    }
 
     private void OnEnable()
     {
@@ -46,29 +54,73 @@ public class TurnManager : MonoBehaviour
     
     private void Start()
     {
-        p1TurnStack = new Stack<GameObject>();
-        p2TurnStack = new Stack<GameObject>();
-
-        FillTurnStack();
-
         turnState = TurnState.Preparing;
+        
+        p1TurnIndex = 0;
+        p2TurnIndex = 0;
+        
+        isP1Turn = true;
+
+        Vector2 indicatorPos = p1TurnList[p1TurnIndex].transform.position;
+        onTurnIndicatorChange?.Invoke(isP1Turn, indicatorPos);
     }
 
-    private void FillTurnStack()
+    #region Turn List Management
+    private void FillWormLists()
     {
-        foreach (GameObject worms in p1Worms)
+        for (int i = 0; i < p1Worms.Length; i++)
         {
-            p1TurnStack.Push(worms);
+            p1TurnList.Add(p1Worms[i]);
+            if (!p1Worms[i].TryGetComponent<IIndexable>(out IIndexable indexable))
+                return;
+            indexable.AssignIndex(i);
         }
+        UpdateP1WormsIndex();
 
-        foreach (GameObject worms in p2Worms)
+        for (int i = 0; i < p2Worms.Length; i++)
         {
-            p2TurnStack.Push(worms);
+            p2TurnList.Add(p2Worms[i]);
+            if (!p2Worms[i].TryGetComponent<IIndexable>(out IIndexable indexable))
+                return;
+            indexable.AssignIndex(i);
         }
-
-        Debug.Log(p1TurnStack.Count);
-        Debug.Log(p2TurnStack.Count);
+        UpdateP2WormsIndex();
     }
+
+    private void UpdateP1WormsIndex()
+    {
+        for (int i = 0; i < p1TurnList.Count; i++)
+        {
+            if (!p1TurnList[i].TryGetComponent(out IIndexable indexable))
+                return;
+            indexable.AssignIndex(i);
+        }
+    }
+
+    private void UpdateP2WormsIndex()
+    {
+        for (int i = 0; i < p2TurnList.Count; i++)
+        {
+            if (!p2TurnList[i].TryGetComponent(out IIndexable indexable))
+                return;
+            indexable.AssignIndex(i);
+        }
+    }
+    
+    public void RemoveObjectFromList(bool isP1, int index)
+    {
+        if (isP1)
+        {
+            p1TurnList.Remove(p1TurnList[index]);
+            UpdateP1WormsIndex();
+        }
+        else
+        {
+            p2TurnList.Remove(p2TurnList[index]);
+            UpdateP2WormsIndex();
+        }
+    }
+    #endregion
 
     private void OnExplosion()
     {
@@ -87,7 +139,51 @@ public class TurnManager : MonoBehaviour
     private void UpdateTurn()
     {
         isP1Turn = !isP1Turn;
-        turnState = TurnState.Preparing;
+        
+        if (isP1Turn)
+        {
+            p1TurnIndex++;
+            if (p1TurnIndex >= p1TurnList.Count)
+            {
+                p1TurnIndex = 0;
+            }
+        }
+        else
+        {
+            p2TurnIndex++;
+            if (p2TurnIndex >= p2TurnList.Count)
+            {
+                p2TurnIndex = 0;
+            }
+        }
+        
         onNextTurn?.Invoke();
+
+        onTurnIndicatorChange?.Invoke(isP1Turn, GetIndicatorPos());
+        turnState = TurnState.Preparing;
+    }
+
+    private Vector2 GetIndicatorPos()
+    {
+        Vector2 indicatorPos;
+        if (isP1Turn)
+        {
+            p1TurnIndex++;
+            if (p1TurnIndex >= p1TurnList.Count)
+            {
+                p1TurnIndex = 0;
+            }
+            indicatorPos = p1TurnList[p1TurnIndex].transform.position;
+        }
+        else
+        {
+            p2TurnIndex++;
+            if (p2TurnIndex >= p2TurnList.Count)
+            {
+                p2TurnIndex = 0;
+            }
+            indicatorPos = p2TurnList[p2TurnIndex].transform.position;
+        }
+        return indicatorPos;
     }
 }

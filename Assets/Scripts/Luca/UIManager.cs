@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -12,6 +11,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text turnTimer;
     [SerializeField] private Image p1Icon;
     [SerializeField] private Image p2Icon;
+
+    [SerializeField] private GameObject turnIndicator;
+    [SerializeField] private Image turnIndicatorImage;
+    [SerializeField] private float offsetFromPlayer = 2f;
+    [SerializeField] private float bounceAmount = 1f;
+    [SerializeField] private float bounceDuration = 1f;
 
     private void Awake()
     {
@@ -28,7 +33,7 @@ public class UIManager : MonoBehaviour
         DestructionTest.onMissileExplosion += DeactivateTurnTimer;      //to be changed to when missile is launched
 
         //occurs at end of Waiting TurnState
-        TurnManager.onNextTurn += SwitchToNextPlayer;
+        TurnManager.onTurnIndicatorChange += UpdateTurnIndicator;
     }
 
 
@@ -41,12 +46,7 @@ public class UIManager : MonoBehaviour
         DestructionTest.onMissileExplosion -= DeactivateTurnTimer;      //to be changed to when missile is launched
 
         //occurs at end of Waiting TurnState
-        TurnManager.onNextTurn -= SwitchToNextPlayer;
-    }
-
-    private void Start()
-    {
-        SwitchToNextPlayer();
+        TurnManager.onTurnIndicatorChange -= UpdateTurnIndicator;
     }
 
     private void UpdateGameTimer(float timer)
@@ -68,15 +68,21 @@ public class UIManager : MonoBehaviour
     
     private void DeactivateTurnTimer() => turnTimer.gameObject.SetActive(false);
 
-    private void SwitchToNextPlayer()
+    private void UpdateTurnIndicator(bool isP1Turn, Vector2 position)
     {
-        if (tm.isP1Turn)
+        if (isP1Turn)
         {
+            turnIndicator.transform.position = new Vector2(position.x, position.y + offsetFromPlayer);
+            turnIndicatorImage.color = Color.red;
+            
             p1Icon.gameObject.SetActive(true);
             p2Icon.gameObject.SetActive(false);
         }
         else
         {
+            turnIndicator.transform.position = new Vector2(position.x, position.y + offsetFromPlayer);
+            turnIndicatorImage.color = Color.blue;
+            
             p1Icon.gameObject.SetActive(false);
             p2Icon.gameObject.SetActive(true);
         }
