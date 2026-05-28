@@ -1894,6 +1894,7 @@ MonoBehaviour:
   aimCharge: {fileID: 1831817158}
   chargeSpeed: 90
   bullet: {fileID: 1418589470198784096, guid: 97984948e21379845b6a00fa6c1f040e, type: 3}
+  spawnPoint: {fileID: 0}
   power: 0
   maxPower: 250
   mask:
@@ -3253,7 +3254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162218aa3132170499721aca4bfd9af2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  turnTimer: 300
+  turnTimer: 3
 --- !u!1 &1751148373
 GameObject:
   m_ObjectHideFlags: 0

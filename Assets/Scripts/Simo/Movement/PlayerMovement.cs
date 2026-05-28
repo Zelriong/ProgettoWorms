@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Sparo")]
     [SerializeField] GameObject bullet;
-    Transform spawnPoint;
+    [SerializeField] GameObject spawnPoint;
     public float power;
     private float minPower;
     [SerializeField] float maxPower = 250;
@@ -232,7 +232,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
-        if (!IsGrounded())
+        if (!IsGrounded() || state != GameState.moving)
             return;
         rb.AddForce(new Vector2(0.8f * direction, 1f) * jumpForce, ForceMode2D.Impulse);
     }
@@ -280,7 +280,7 @@ public class PlayerMovement : MonoBehaviour
         aim.SetActive(false);
         aimCharge.gameObject.SetActive(false);
         
-        Instantiate(bullet, spawnPoint.position, spawnPoint.rotation);
+        Instantiate(bullet, spawnPoint.transform.position, spawnPoint.transform.rotation);
 
         state = GameState.moving; //poi da cambiare in "fineTurno"
 
@@ -298,6 +298,7 @@ public class PlayerMovement : MonoBehaviour
         SpriteRenderer wormSprite = worm.GetComponentInChildren<SpriteRenderer>();
         wormSpriteObj = wormSprite.gameObject;
 
+        gameObject.transform.position = controlledWorm.transform.position;
         currentEnergy = moveEnergy;
     }
 
