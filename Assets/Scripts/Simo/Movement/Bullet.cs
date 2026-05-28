@@ -37,7 +37,7 @@ public class Bullet : MonoBehaviour
     {
         if(collision.collider == gameObject.TryGetComponent<IDamageable>(out IDamageable component))
         {
-            component.takeDamage(damage);
+            component.TakeDamage(damage, 1f);
 
             Explode();
         }
