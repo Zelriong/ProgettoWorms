@@ -35,8 +35,6 @@ public class PlayerMovement : MonoBehaviour
 
     public LayerMask mask;
 
-    public PlayerInputs inputs;
-
     float direction;
 
 
@@ -44,10 +42,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+           
     }
     private void OnEnable()
     {
-        inputs = new PlayerInputs();   
         inputs.Player.Jump.performed += Jump;
         inputs.Player.BeginShooting.performed += IsShooting;
         inputs.Player.BackFromShooting.performed += CancelShooting;
@@ -60,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnDisable()
     {
+        
         inputs.Player.BeginShooting.performed -= IsShooting;
         inputs.Player.Jump.performed -= Jump;
         inputs.Player.BackFromShooting.performed -= CancelShooting;
