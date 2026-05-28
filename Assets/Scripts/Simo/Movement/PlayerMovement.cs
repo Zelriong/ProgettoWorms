@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     public float power;
     private float minPower;
     [SerializeField] float maxPower = 250;
+    public Vector2 launchDirection;
     
     //Vector2 moveDirection;
 
@@ -112,6 +113,8 @@ public class PlayerMovement : MonoBehaviour
         transform.localScale = new Vector3(direction, 
                                 transform.localScale.y, 
                                 transform.localScale.z);
+        
+        gameObject.transform.position = controlledWorm.transform.position;
         
         //runs only when right click is held
         if (state == GameState.aiming)
@@ -279,6 +282,8 @@ public class PlayerMovement : MonoBehaviour
         //charging = false;
         aim.SetActive(false);
         aimCharge.gameObject.SetActive(false);
+
+        launchDirection = (spawnPoint.transform.position - controlledWorm.transform.position).normalized;
         
         Instantiate(bullet, spawnPoint.transform.position, spawnPoint.transform.rotation);
 
@@ -298,7 +303,6 @@ public class PlayerMovement : MonoBehaviour
         SpriteRenderer wormSprite = worm.GetComponentInChildren<SpriteRenderer>();
         wormSpriteObj = wormSprite.gameObject;
 
-        gameObject.transform.position = controlledWorm.transform.position;
         currentEnergy = moveEnergy;
     }
 
