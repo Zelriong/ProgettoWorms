@@ -45,7 +45,7 @@ public class Bullet : MonoBehaviour
 
     private void Explode()
     {
-        Destroy(this);
+        Destroy(gameObject);
     }
 
 }

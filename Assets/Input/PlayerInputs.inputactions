@@ -25,15 +25,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "BeginShooting",
-                    "type": "Button",
-                    "id": "209e12ff-1ac9-4388-a838-472cb26ca0d5",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Shoot",
                     "type": "Button",
                     "id": "5a5a5f51-a254-4c14-8434-08a1c8ec9774",
@@ -116,17 +107,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "da46636e-d5df-432e-b24a-fd45addfbd35",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "BeginShooting",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

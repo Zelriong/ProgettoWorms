@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public enum GameState
 {
     moving,
+    aiming,
     shooting,
     jumping,
 }
@@ -31,7 +32,9 @@ public class PlayerMovement : MonoBehaviour
     BoxCollider2D boxCollider2d;
 
     Vector2 moveDirection;
+
     float isJumping;
+    bool charging;
 
     public LayerMask mask;
 
@@ -42,27 +45,30 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-           
+
     }
     private void OnEnable()
     {
-        inputs.Player.Jump.performed += Jump;
-        inputs.Player.BeginShooting.performed += IsShooting;
-        inputs.Player.BackFromShooting.performed += CancelShooting;
-        inputs.Player.Shoot.performed += Shot;
+        InputManager.instance.inputs.Player.Jump.performed += Jump;
+        InputManager.instance.inputs.Player.BackFromShooting.performed += IsShooting;
+        InputManager.instance.inputs.Player.BackFromShooting.canceled += CancelShooting;
+        InputManager.instance.inputs.Player.Shoot.performed += Shot;
+        InputManager.instance.inputs.Player.Shoot.canceled += StopShooting;
         state = GameState.moving;
-        
+
     }
 
-    
+
 
     private void OnDisable()
     {
-        
-        inputs.Player.BeginShooting.performed -= IsShooting;
-        inputs.Player.Jump.performed -= Jump;
-        inputs.Player.BackFromShooting.performed -= CancelShooting;
-        inputs.Player.Shoot.performed -= Shot;
+
+
+        InputManager.instance.inputs.Player.Jump.performed -= Jump;
+        InputManager.instance.inputs.Player.BackFromShooting.canceled -= CancelShooting;
+        InputManager.instance.inputs.Player.BackFromShooting.performed -= IsShooting;
+        InputManager.instance.inputs.Player.Shoot.performed -= Shot;
+        InputManager.instance.inputs.Player.Shoot.canceled -= StopShooting;
 
     }
     private void Start()
@@ -73,8 +79,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
-        moveDirection = inputs.Player.Movement.ReadValue<Vector2>();
-        isJumping = inputs.Player.Jump.ReadValue<float>();
+        moveDirection = InputManager.instance.inputs.Player.Movement.ReadValue<Vector2>();
+        isJumping = InputManager.instance.inputs.Player.Jump.ReadValue<float>();
 
         if (moveDirection.x < 0) { direction = -1; } // se ci sportiamo a sx si gira a sx
 
@@ -86,13 +92,13 @@ public class PlayerMovement : MonoBehaviour
         transform.localScale = new Vector3(direction, transform.localScale.y, transform.localScale.z); //la scale va in base alla direction
 
         Debug.Log(state);
-        
+
     }
 
     private void FixedUpdate()
     {
         if (IsGrounded() == true && state == GameState.moving) Move();
-         
+
 
     }
 
@@ -131,9 +137,9 @@ public class PlayerMovement : MonoBehaviour
             state = GameState.shooting;
             aim.gameObject.SetActive(true);
             StartCoroutine(Shooting());
-            
+
         }
-        
+
     }
 
     private void CancelShooting(InputAction.CallbackContext context)
@@ -145,18 +151,26 @@ public class PlayerMovement : MonoBehaviour
 
     private void Shot(InputAction.CallbackContext context)
     {
+        charging = true;
         StartCoroutine(Shoot());
     }
 
-    IEnumerator Shooting() 
+    private void StopShooting(InputAction.CallbackContext context)
     {
+        charging = false;
         
+
+    }
+
+    IEnumerator Shooting()
+    {
+
         Vector3 rotateZ = new Vector3(0, 0, moveDirection.y);
         while (power < 0)
         {
             aim.transform.Rotate(rotateZ);
 
-            if(state != GameState.shooting) yield return null;
+            if (state != GameState.shooting) yield return null;
 
             break;
         }
@@ -169,27 +183,29 @@ public class PlayerMovement : MonoBehaviour
         if (state != GameState.shooting) yield return null;
         aimCharge.fillAmount = maxPower / power;
 
-        while (true)
+        while (charging == true)
         {
-            if(power >= maxPower) break;
+            if (power >= maxPower) break;
 
             power += chargeSpeed * Time.deltaTime;
 
-            if (Input.GetMouseButtonUp(0))
-            {
-                Instantiate(bullet, spawnPoint.position, spawnPoint.rotation, transform);
-                aim.gameObject.SetActive(false);
-                break;
-            }
+            //if (Input.GetMouseButtonUp(0))
+            //{
+            //    Instantiate(bullet, spawnPoint.position, spawnPoint.rotation, transform);
+            //    aim.gameObject.SetActive(false);
+            //    break;
+            //}
+            break;
         }
 
-        //Instantiate(bullet, spawnPoint.position, spawnPoint.rotation, transform);
+        Instantiate(bullet, spawnPoint.position, spawnPoint.rotation, transform);
 
-        yield return new WaitForSeconds(3f);
+        state = GameState.moving; //poi da cambiare in "fineTurno"
+        
+        yield return new WaitForSeconds(2f);
 
         power = 0f;
 
-        state = GameState.moving; //poi da cambiare in "fineTurno"
 
         StopAllCoroutines();
 
