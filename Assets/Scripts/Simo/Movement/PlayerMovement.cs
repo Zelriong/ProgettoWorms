@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
 
     public LayerMask mask;
 
-    float direction;
+    public float direction;
     
     GameState state;
 
@@ -285,7 +285,7 @@ public class PlayerMovement : MonoBehaviour
 
         launchDirection = (spawnPoint.transform.position - controlledWorm.transform.position).normalized;
         
-        Instantiate(bullet, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        Instantiate(bullet, spawnPoint.transform.position, aim.transform.rotation);
 
         state = GameState.moving; //poi da cambiare in "fineTurno"
 

@@ -20,12 +20,13 @@ public class Bullet : MonoBehaviour
     [SerializeField] private GameObject m_explosionEffect;
     
     public static event Action onMissileExplosion;
-    
+
     //float timer;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        player = GetComponentInParent<PlayerMovement>();
+        player = FindAnyObjectByType<PlayerMovement>();
         power = player.power;
         
         explosionPooler = FindAnyObjectByType<ExplosionPooler>();
@@ -33,23 +34,29 @@ public class Bullet : MonoBehaviour
     }
     private void OnEnable()
     {
-        rb.AddForce(transform.right * (power / 2), ForceMode2D.Impulse);
+        rb.AddForce(transform.right * player.launchDirection * (power/5), ForceMode2D.Impulse);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         //timer += Time.deltaTime;
 
         Vector2 v = rb.linearVelocity;
         float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-    
+
         //if (timer > 5) Explode();
 
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Explode();
+        Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        gameObject.SetActive(false);
     }
 
     private void Explode()
@@ -76,8 +83,12 @@ public class Bullet : MonoBehaviour
         
         onMissileExplosion?.Invoke();
         
+        
+
         if (explosionPooler == null)
             return;
         explosionPooler.GetExplosion(worldPosition, Quaternion.identity);
+
+       
     }
 }
