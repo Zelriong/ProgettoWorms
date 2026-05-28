@@ -161,15 +161,15 @@ public class PlayerMovement : MonoBehaviour
         {
             if (aim.transform.rotation.eulerAngles.z >= 179.5f)
                 aim.transform.rotation = Quaternion.Euler(0, 0, 179.5f);
-            else if (aim.transform.rotation.eulerAngles.z <= 0.5f)
-                aim.transform.rotation = Quaternion.Euler(0, 0, 0.5f);
+            else if (aim.transform.rotation.eulerAngles.z <= 90.5f)
+                aim.transform.rotation = Quaternion.Euler(0, 0, 90.5f);
         }
         else if (direction == -1f)
         {
-            if (aim.transform.rotation.eulerAngles.z >= 359.5f)
-                aim.transform.rotation = Quaternion.Euler(0, 0, 359.5f);
-            else if (aim.transform.rotation.eulerAngles.z <= 180.5f)
+            if (aim.transform.rotation.eulerAngles.z <= 180.5f)
                 aim.transform.rotation = Quaternion.Euler(0, 0, 180.5f);
+            else if (aim.transform.rotation.eulerAngles.z >= 269.5f)
+                aim.transform.rotation = Quaternion.Euler(0, 0, 269.5f);
         }
         
         // if (aim.transform.rotation.eulerAngles.z >= 179.5f)
@@ -286,7 +286,7 @@ public class PlayerMovement : MonoBehaviour
         launchDirection = (spawnPoint.transform.position - controlledWorm.transform.position).normalized;
         
         Instantiate(bullet, spawnPoint.transform.position, aim.transform.rotation);
-
+        
         state = GameState.moving; //poi da cambiare in "fineTurno"
 
         power = 0f;

@@ -34,18 +34,22 @@ public class Bullet : MonoBehaviour
     }
     private void OnEnable()
     {
-        rb.AddForce(transform.right * player.launchDirection * (power/5), ForceMode2D.Impulse);
+        if (player.direction == 1f)
+            rb.AddForce(-transform.up * player.launchDirection * (power/5), ForceMode2D.Impulse);
+        else 
+            rb.AddForce(-transform.right * player.launchDirection * (power/5), ForceMode2D.Impulse);
     }
 
     private void Update()
     {
         //timer += Time.deltaTime;
 
-        Vector2 v = rb.linearVelocity;
-        float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+         Vector2 v = rb.linearVelocity;
+         float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
+         Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle).normalized;
+         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360f * Time.deltaTime);
 
-        //if (timer > 5) Explode();
+         //if (timer > 5) Explode();
 
     }
     private void OnCollisionEnter2D(Collision2D collision)
