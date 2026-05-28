@@ -10,6 +10,7 @@ public enum TurnState
     Waiting
 }
 
+[DefaultExecutionOrder(-98)]
 public class TurnManager : MonoBehaviour
 {
     public TurnState turnState;
@@ -26,6 +27,7 @@ public class TurnManager : MonoBehaviour
     //since there is only 2 players, true will be p1's turn while false will be p2's turn
     private bool isP1Turn = true;
 
+    public static event Action<GameObject> onWormRefChanged;
     public static event Action onNextTurn;
     public static event Action<bool, Vector2> onTurnIndicatorChange;
 
@@ -34,12 +36,13 @@ public class TurnManager : MonoBehaviour
         p1TurnList = new List<GameObject>();
         p2TurnList = new List<GameObject>();
         FillWormLists();
+        
     }
 
     private void OnEnable()
     {
         //occurs at end of Firing TurnState
-        DestructionTest.onMissileExplosion += OnExplosion;
+        Bullet.onMissileExplosion += OnExplosion;
 
         //occurs when turn timer finishes
         GameManager.onTurnTimerFinished += UpdateTurn;
@@ -47,7 +50,7 @@ public class TurnManager : MonoBehaviour
 
     private void OnDisable()
     {
-        DestructionTest.onMissileExplosion -= OnExplosion;
+        Bullet.onMissileExplosion -= OnExplosion;
 
         GameManager.onTurnTimerFinished -= UpdateTurn;
     }
@@ -122,6 +125,11 @@ public class TurnManager : MonoBehaviour
     }
     #endregion
 
+    private void ChangeWormReference(GameObject worm)
+    {
+        onWormRefChanged?.Invoke(worm);
+    }
+    
     private void OnExplosion()
     {
         turnState = TurnState.Waiting;
@@ -147,6 +155,7 @@ public class TurnManager : MonoBehaviour
             {
                 p1TurnIndex = 0;
             }
+            ChangeWormReference(p1TurnList[p1TurnIndex]);
         }
         else
         {
@@ -155,10 +164,10 @@ public class TurnManager : MonoBehaviour
             {
                 p2TurnIndex = 0;
             }
+            ChangeWormReference(p2TurnList[p2TurnIndex]);
         }
         
         onNextTurn?.Invoke();
-
         onTurnIndicatorChange?.Invoke(isP1Turn, GetIndicatorPos());
         turnState = TurnState.Preparing;
     }
@@ -168,20 +177,10 @@ public class TurnManager : MonoBehaviour
         Vector2 indicatorPos;
         if (isP1Turn)
         {
-            p1TurnIndex++;
-            if (p1TurnIndex >= p1TurnList.Count)
-            {
-                p1TurnIndex = 0;
-            }
             indicatorPos = p1TurnList[p1TurnIndex].transform.position;
         }
         else
         {
-            p2TurnIndex++;
-            if (p2TurnIndex >= p2TurnList.Count)
-            {
-                p2TurnIndex = 0;
-            }
             indicatorPos = p2TurnList[p2TurnIndex].transform.position;
         }
         return indicatorPos;

@@ -24,7 +24,6 @@ public class ModifiableTexture
         
         //gets all the pixels of 2D texture and stores it in an array
         Color[] pixels = sprite.texture.GetPixels((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
-        Debug.Log(pixels.Length);
         //sets the pixels to the texture using the array of pixels obtained from the sprite
         texture.SetPixels(pixels);
         //sends texture data from CPU to GPU

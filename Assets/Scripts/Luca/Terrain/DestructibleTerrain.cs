@@ -149,18 +149,18 @@ public class DestructibleTerrain : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        if (Application.isPlaying)
-        {
-            if (m_chunkManager != null)
-            {
-                Vector3 chunkSize = new(m_chunkSize.x * m_grid.cellSize.x, m_chunkSize.y * m_grid.cellSize.y);
-                Vector3 halfSize = chunkSize / 2;
-                m_chunkManager.DrawGizmos(chunkSize, halfSize);
-            }
-        }
-    }
+    // private void OnDrawGizmosSelected()
+    // {
+    //     if (Application.isPlaying)
+    //     {
+    //         if (m_chunkManager != null)
+    //         {
+    //             Vector3 chunkSize = new(m_chunkSize.x * m_grid.cellSize.x, m_chunkSize.y * m_grid.cellSize.y);
+    //             Vector3 halfSize = chunkSize / 2;
+    //             m_chunkManager.DrawGizmos(chunkSize, halfSize);
+    //         }
+    //     }
+    // }
 
     private void ModifyTextureAt(Vector2Int circleCenterInPixelSpace, Color color, List<Vector2Int> affectedPixelsAsOffset)
     {

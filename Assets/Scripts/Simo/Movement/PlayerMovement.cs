@@ -10,6 +10,12 @@ public enum GameState
 }
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private GameObject controlledWorm;
+    private GameObject wormSpriteObj;
+    Rigidbody2D rb;
+    CapsuleCollider2D capsuleCollider2d;
+    private Vector3 wormSpriteScale;
+    
     [Header("Movimento")]
     [SerializeField] float movementSpeed;
     [SerializeField] float jumpForce;
@@ -23,14 +29,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Sparo")]
     [SerializeField] GameObject bullet;
-    [SerializeField] Transform spawnPoint;
+    Transform spawnPoint;
     public float power;
     private float minPower;
     [SerializeField] float maxPower = 250;
-
-    Rigidbody2D rb;
-    BoxCollider2D boxCollider2d;
-
+    
     //Vector2 moveDirection;
 
     float isJumping;
@@ -44,10 +47,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        boxCollider2d = GetComponent<BoxCollider2D>();
+        ChangeWormRef(controlledWorm);
     }
-    
+
     private void OnEnable()
     {
         InputManager.OnJump += Jump;
@@ -55,6 +57,8 @@ public class PlayerMovement : MonoBehaviour
         InputManager.OnCancel += CancelShooting;
         InputManager.OnCharging += Shot;
         InputManager.OnShooting += StopShooting;
+
+        TurnManager.onWormRefChanged += ChangeWormRef;
     }
 
     private void OnDisable()
@@ -65,7 +69,9 @@ public class PlayerMovement : MonoBehaviour
         InputManager.OnCharging -= Shot;
         InputManager.OnShooting -= StopShooting;
 
+        TurnManager.onWormRefChanged += ChangeWormRef;
     }
+
     private void Start()
     {
         state = GameState.moving;
@@ -76,7 +82,12 @@ public class PlayerMovement : MonoBehaviour
         direction = 1;
 
         minPower = maxPower / 10;
+        
+        wormSpriteScale = new Vector3(wormSpriteObj.transform.localScale.x, 
+                    wormSpriteObj.transform.localScale.y, 
+                    wormSpriteObj.transform.localScale.z);
     }
+    
     private void Update()
     {
         //isJumping = InputManager.instance.inputs.Player.Jump.ReadValue<float>();
@@ -91,11 +102,12 @@ public class PlayerMovement : MonoBehaviour
         //if (moveDirection.x != 0) { anim.SetBool("IsMoving", true); }
         //else { anim.SetBool("IsMoving", false); }
 
-        transform.localScale = new Vector3(direction, transform.localScale.y, transform.localScale.z); //la scale va in base alla direction
-        aim.transform.localScale = new Vector3(direction, aim.transform.localScale.y, aim.transform.localScale.z);
+        wormSpriteObj.transform.localScale = new Vector3(wormSpriteScale.x * direction, wormSpriteScale.y, wormSpriteScale.z);    //la scale va in base alla direction
 
-        Debug.Log(state);
-
+        transform.localScale = new Vector3(direction, 
+                                transform.localScale.y, 
+                                transform.localScale.z);
+        
         //runs only when right click is held
         if (state == GameState.aiming)
         {
@@ -127,8 +139,10 @@ public class PlayerMovement : MonoBehaviour
             rotationValue = 0f;
         }
         
-        Vector3 rotateZ = new Vector3(0, 0, rotationValue);
+        Vector3 rotateZ = new Vector3(0f, 0f, rotationValue);
         aim.transform.Rotate(rotateZ);
+        
+        //Debug.Log(aim.transform.rotation.eulerAngles.z);
 
         //locks rotation from going over 180 degrees in one direction
         if (direction == 1f)
@@ -145,6 +159,11 @@ public class PlayerMovement : MonoBehaviour
             else if (aim.transform.rotation.eulerAngles.z <= 180.5f)
                 aim.transform.rotation = Quaternion.Euler(0, 0, 180.5f);
         }
+        
+        // if (aim.transform.rotation.eulerAngles.z >= 179.5f)
+        //     aim.transform.rotation = Quaternion.Euler(0, 0, 179.5f);
+        // else if (aim.transform.rotation.eulerAngles.z <= 0.5f)
+        //     aim.transform.rotation = Quaternion.Euler(0, 0, 0.5f);
     }
 
     private void RegulateForce()
@@ -166,20 +185,27 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsGrounded() == true && state == GameState.moving) Move();
+        if (IsGrounded() && state == GameState.moving) Move();
     }
     
     void Move()
     {
         if (InputManager.IsMoving(out Vector2 moveDirection))
-            rb.linearVelocity = new Vector2(moveDirection.x * movementSpeed * Time.fixedDeltaTime, 0f);
+        {
+            //rb.linearVelocity = new Vector2(moveDirection.x * movementSpeed * Time.fixedDeltaTime, 0f);
+            
+            Vector2 horMove = new Vector2(moveDirection.x, 0f);
+            rb.MovePosition(rb.position + horMove * (movementSpeed * Time.fixedDeltaTime));
+        }
     }
 
     private bool IsGrounded()
     {
         /*bool isGrounded*/
         ;
-        RaycastHit2D rayHit = Physics2D.BoxCast(boxCollider2d.bounds.center, boxCollider2d.bounds.size, 0f, Vector2.down, 0.1f, mask);
+        RaycastHit2D rayHit = Physics2D.CapsuleCast(capsuleCollider2d.bounds.center,
+            capsuleCollider2d.bounds.size, 
+            0f, 0f, Vector2.down, 0.1f, mask);
 
         //Collider2D colliders = Physics2D.OverlapCircle(boxCollider2d.bounds.center, 1f, 6);
 
@@ -192,21 +218,23 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
+        if (!IsGrounded())
+            return;
         rb.AddForce(new Vector2(0.8f * direction, 1f) * jumpForce, ForceMode2D.Impulse);
-
     }
 
     //on right click start
     private void IsShooting()
     {
+        
         if (IsGrounded() && state == GameState.moving)
         {
             state = GameState.aiming;
+            aim.transform.position = controlledWorm.transform.position;
             aim.SetActive(true);
             //StartCoroutine(Shooting());
         }
     }
-
 
     //on right click end
     private void CancelShooting()
@@ -233,6 +261,7 @@ public class PlayerMovement : MonoBehaviour
         if (state != GameState.shooting) return;
         
         //charging = false;
+        aim.SetActive(false);
         aimCharge.gameObject.SetActive(false);
         
         Instantiate(bullet, spawnPoint.position, spawnPoint.rotation, transform);
@@ -240,6 +269,18 @@ public class PlayerMovement : MonoBehaviour
         state = GameState.moving; //poi da cambiare in "fineTurno"
 
         power = 0f;
+    }
+
+    private void ChangeWormRef(GameObject worm)
+    {
+        controlledWorm = worm;
+        if (worm.TryGetComponent(out Rigidbody2D wormRB))
+            rb = wormRB;
+        if (worm.TryGetComponent(out CapsuleCollider2D wormCollider))
+            capsuleCollider2d = wormCollider;
+        
+        SpriteRenderer wormSprite = worm.GetComponentInChildren<SpriteRenderer>();
+        wormSpriteObj = wormSprite.gameObject;
     }
 
     // IEnumerator Shooting()
@@ -291,9 +332,9 @@ public class PlayerMovement : MonoBehaviour
     //     StopAllCoroutines();
     //
     // }
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawCube(new Vector3(boxCollider2d.bounds.center.x, boxCollider2d.bounds.center.y - 0.1f, boxCollider2d.bounds.center.z), boxCollider2d.bounds.size);
-    //    Gizmos.color = Color.greenYellow;
-    //}
+    // private void OnDrawGizmos()
+    // {
+    //     Gizmos.DrawCube(new Vector3(boxCollider2d.bounds.center.x, boxCollider2d.bounds.center.y - 0.1f, boxCollider2d.bounds.center.z), boxCollider2d.bounds.size);
+    //     Gizmos.color = Color.greenYellow;
+    // }
 }
