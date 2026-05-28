@@ -168,19 +168,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void RegulateForce()
     {
-        power = Mathf.Clamp(power, minPower, maxPower); 
-        if (InputManager.IsMoving(out Vector2 moveDirection))
-        {
-            if (moveDirection.y <= -0.1f)
-            {
-                power -= chargeSpeed * Time.deltaTime;
-            }
-            else if (moveDirection.y >= 0.1f)
-            {
-                power += chargeSpeed * Time.deltaTime;
-            }
-        }
+        //power = Mathf.Clamp(power, minPower, maxPower);
+        power += chargeSpeed * Time.deltaTime;
+        // if (InputManager.IsMoving(out Vector2 moveDirection))
+        // {
+        //     if (moveDirection.y <= -0.1f)
+        //     {
+        //         power -= chargeSpeed * Time.deltaTime;
+        //     }
+        //     else if (moveDirection.y >= 0.1f)
+        //     {
+        //         power += chargeSpeed * Time.deltaTime;
+        //     }
+        // }
         aimCharge.fillAmount = power / maxPower;
+        if (power >= maxPower)
+            StopShooting();
     }
 
     private void FixedUpdate()
@@ -239,6 +242,8 @@ public class PlayerMovement : MonoBehaviour
     //on right click end
     private void CancelShooting()
     {
+        if (state != GameState.aiming) return;
+        
         aim.SetActive(false);
         aimCharge.gameObject.SetActive(false);
         state = GameState.moving;
@@ -264,7 +269,7 @@ public class PlayerMovement : MonoBehaviour
         aim.SetActive(false);
         aimCharge.gameObject.SetActive(false);
         
-        Instantiate(bullet, spawnPoint.position, spawnPoint.rotation, transform);
+        Instantiate(bullet, spawnPoint.position, spawnPoint.rotation);
 
         state = GameState.moving; //poi da cambiare in "fineTurno"
 
