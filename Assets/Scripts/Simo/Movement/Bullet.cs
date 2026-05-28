@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Bullet : MonoBehaviour
 {
@@ -33,7 +32,7 @@ public class Bullet : MonoBehaviour
         if (timer > 5) Explode();
 
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.collider == gameObject.TryGetComponent<IDamageable>(out IDamageable component))
         {

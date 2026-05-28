@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour
         TurnManager.onNextTurn += ResetTurnTimer;
         
         PlayerDamage.onDamageTaken += UpdatePlayerHealth;
+
+        //InputManager.OnPauseRequested += PauseGame;
     }
 
     private void OnDisable()
@@ -34,7 +36,14 @@ public class GameManager : MonoBehaviour
         TurnManager.onNextTurn -= ResetTurnTimer;
         
         PlayerDamage.onDamageTaken -= UpdatePlayerHealth;
+        
+        //InputManager.OnPauseRequested -= PauseGame;
     }
+    
+    // void PauseGame()
+    // {
+    //     InputManager.OnPauseAllowed?.Invoke();
+    // }
 
     private void Start()
     {
