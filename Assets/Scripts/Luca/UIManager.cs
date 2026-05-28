@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[DefaultExecutionOrder(-99)]
 public class UIManager : MonoBehaviour
 {
     private GameManager gm;
@@ -17,8 +18,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject turnIndicator;
     [SerializeField] private Image turnIndicatorImage;
     [SerializeField] private float offsetFromPlayer = 2f;
-    [SerializeField] private float bounceAmount = 1f;
-    [SerializeField] private float bounceDuration = 1f;
 
     private void Awake()
     {
@@ -34,7 +33,7 @@ public class UIManager : MonoBehaviour
         GameManager.onP2HealthUpdated += UpdateP2HealthBar;
 
         //occurs at beginning of Firing TurnState
-        DestructionTest.onMissileExplosion += DeactivateTurnTimer;      //to be changed to when missile is launched
+        Bullet.onMissileExplosion += DeactivateTurnTimer;      //to be changed to when missile is launched
 
         //occurs at end of Waiting TurnState
         TurnManager.onTurnIndicatorChange += UpdateTurnIndicator;
@@ -49,7 +48,7 @@ public class UIManager : MonoBehaviour
         GameManager.onP2HealthUpdated -= UpdateP2HealthBar;
 
         //occurs at start of Firing TurnState
-        DestructionTest.onMissileExplosion -= DeactivateTurnTimer;      //to be changed to when missile is launched
+        Bullet.onMissileExplosion -= DeactivateTurnTimer;      //to be changed to when missile is launched
 
         //occurs at end of Waiting TurnState
         TurnManager.onTurnIndicatorChange -= UpdateTurnIndicator;

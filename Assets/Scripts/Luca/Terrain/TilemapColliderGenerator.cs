@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -14,6 +15,7 @@ public class TilemapColliderGenerator : MonoBehaviour
         m_tile = ScriptableObject.CreateInstance<Tile>();
         //m_tile = tileScriptable.tile;                       //gets the tile from the scriptable object and assigns it to the tile reference
         m_tile.colliderType = Tile.ColliderType.Grid;       //sets the tile collider type to grid, which creates a collider for each tile in the tilemap
+        gameObject.layer = LayerMask.NameToLayer("Ground");
     }
 
     //array of arrays represents if there is a pixel or not where the tilemap collider generator object is placed
@@ -33,6 +35,7 @@ public class TilemapColliderGenerator : MonoBehaviour
         Vector3Int centerTile = new(pixelState[0].Length / 2, pixelState.Length / 2);
         //converts the cell position to world position
         Center = m_tilemap.CellToWorld(centerTile);
+        //gameObject.layer = LayerMask.NameToLayer("Ground");
     }
     
     //method to destroy tiles within the tilemap

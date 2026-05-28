@@ -20,7 +20,7 @@ public class DestructionTest : MonoBehaviour
     [SerializeField] private float m_knockbackPower = 10f;
 
     private bool canMakeAction = true;
-    public static event Action onMissileExplosion;
+    //public static event Action onMissileExplosion;
 
     private void Awake()
     {
@@ -72,7 +72,7 @@ public class DestructionTest : MonoBehaviour
         }
         #endregion
 
-        onMissileExplosion?.Invoke();
+        //onMissileExplosion?.Invoke();
 
         //makes sure to go through the wait process before acting again
         canMakeAction = false;

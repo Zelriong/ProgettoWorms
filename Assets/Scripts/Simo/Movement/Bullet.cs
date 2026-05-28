@@ -1,50 +1,83 @@
+using System;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    private ExplosionPooler explosionPooler;
+    private DestructibleTerrain m_destructibleTerrain;
+    
     [SerializeField] int damage;
     
-
     Rigidbody2D rb;
     PlayerMovement player;
     float power;
-
-    float timer;
+    
+    [Header("Explosion")]
+    [SerializeField] private float m_destuctionRadius;
+    [SerializeField] private float m_damageRadius;
+    [SerializeField] private float m_damage = 30f;
+    [SerializeField] private float m_knockbackPower = 10f;
+    [SerializeField] private GameObject m_explosionEffect;
+    
+    public static event Action onMissileExplosion;
+    
+    //float timer;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         player = GetComponentInParent<PlayerMovement>();
         power = player.power;
+        
+        explosionPooler = FindAnyObjectByType<ExplosionPooler>();
+        m_destructibleTerrain = FindAnyObjectByType<DestructibleTerrain>();
     }
     private void OnEnable()
     {
         rb.AddForce(transform.right * (power / 2), ForceMode2D.Impulse);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        timer += Time.deltaTime;
+        //timer += Time.deltaTime;
 
         Vector2 v = rb.linearVelocity;
         float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     
-        if (timer > 5) Explode();
+        //if (timer > 5) Explode();
 
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.collider == gameObject.TryGetComponent<IDamageable>(out IDamageable component))
-        {
-            component.TakeDamage(damage, 1f);
-
-            Explode();
-        }
+        Explode();
     }
 
     private void Explode()
     {
-        Destroy(gameObject);
+        Vector2 worldPosition = transform.position;
+        m_destructibleTerrain.DestroyTerrainAt(worldPosition, m_destuctionRadius);
+        
+        #region Damage and Knockback
+        //overlap sphere at explosion center to damage worms
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(worldPosition, m_damageRadius);
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.TryGetComponent(out IDamageable damageable))
+            {
+                Vector2 direction = (worldPosition - (Vector2)collider.transform.position).normalized;
+                float distance = Vector2.Distance(worldPosition, collider.transform.position);
+                if (distance <= 1f)
+                    distance = 1f;
+                damageable.TakeDamage(m_damage, distance);
+                damageable.Knockback(direction, m_knockbackPower, distance);
+            }
+        }
+        #endregion
+        
+        onMissileExplosion?.Invoke();
+        
+        if (explosionPooler == null)
+            return;
+        explosionPooler.GetExplosion(worldPosition, Quaternion.identity);
     }
-
 }

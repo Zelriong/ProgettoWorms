@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[DefaultExecutionOrder(-100)]
 public class GameManager : MonoBehaviour
 {
     private TurnManager tm;
