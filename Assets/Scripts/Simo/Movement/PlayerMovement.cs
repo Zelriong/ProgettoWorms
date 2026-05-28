@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
     
     [Header("Movimento")]
     [SerializeField] float movementSpeed;
+    [SerializeField] private float moveEnergy;
+    private float currentEnergy;
     [SerializeField] float jumpForce;
 
     [Header("Mira")]
@@ -44,6 +47,8 @@ public class PlayerMovement : MonoBehaviour
     float direction;
     
     GameState state;
+
+    public static event Action onPlayerMove;
 
     private void Awake()
     {
@@ -133,6 +138,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 rotationValue = rotationSpeed * Time.deltaTime;
             }
+            else
+            {
+                rotationValue = 0f;
+            }
         }
         else
         {
@@ -188,13 +197,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsGrounded() && state == GameState.moving) Move();
+        if (IsGrounded() && state == GameState.moving && currentEnergy > 0f) Move();
     }
     
     void Move()
     {
         if (InputManager.IsMoving(out Vector2 moveDirection))
         {
+            onPlayerMove?.Invoke();
+            currentEnergy -= Time.fixedDeltaTime;
             //rb.linearVelocity = new Vector2(moveDirection.x * movementSpeed * Time.fixedDeltaTime, 0f);
             
             Vector2 horMove = new Vector2(moveDirection.x, 0f);
@@ -286,6 +297,8 @@ public class PlayerMovement : MonoBehaviour
         
         SpriteRenderer wormSprite = worm.GetComponentInChildren<SpriteRenderer>();
         wormSpriteObj = wormSprite.gameObject;
+
+        currentEnergy = moveEnergy;
     }
 
     // IEnumerator Shooting()

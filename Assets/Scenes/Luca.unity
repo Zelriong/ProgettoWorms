@@ -1887,6 +1887,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   controlledWorm: {fileID: 3277723975560940604}
   movementSpeed: 1
+  moveEnergy: 5
   jumpForce: 2.5
   aim: {fileID: 1751148373}
   rotationSpeed: 50

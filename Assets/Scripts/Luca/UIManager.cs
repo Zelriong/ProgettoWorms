@@ -37,6 +37,7 @@ public class UIManager : MonoBehaviour
 
         //occurs at end of Waiting TurnState
         TurnManager.onTurnIndicatorChange += UpdateTurnIndicator;
+        PlayerMovement.onPlayerMove += DeactivateTurnIndicator;
     }
 
 
@@ -52,6 +53,7 @@ public class UIManager : MonoBehaviour
 
         //occurs at end of Waiting TurnState
         TurnManager.onTurnIndicatorChange -= UpdateTurnIndicator;
+        PlayerMovement.onPlayerMove -= DeactivateTurnIndicator;
     }
 
     private void Start()
@@ -81,6 +83,8 @@ public class UIManager : MonoBehaviour
 
     private void UpdateTurnIndicator(bool isP1Turn, Vector2 position)
     {
+        turnIndicator.gameObject.SetActive(true);
+        
         if (isP1Turn)
         {
             turnIndicator.transform.position = new Vector2(position.x, position.y + offsetFromPlayer);
@@ -94,6 +98,8 @@ public class UIManager : MonoBehaviour
 
         turnTimer.gameObject.SetActive(true);
     }
+    
+    private void DeactivateTurnIndicator() => turnIndicator.gameObject.SetActive(false);
 
     private void UpdateP1HealthBar(float currentHealth, float maxHealth)
     {
