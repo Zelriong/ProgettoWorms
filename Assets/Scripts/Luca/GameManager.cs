@@ -141,8 +141,9 @@ public class GameManager : MonoBehaviour
                 
                 onBlueTeamWin?.Invoke();
             }
+            
         }
-        else
+        else 
         {
             float p2Health = 0f;
 
@@ -164,6 +165,7 @@ public class GameManager : MonoBehaviour
 
             if(totalP2Health <= 0f)
                 onRedTeamWin?.Invoke();
+            
         }
     }
 }
