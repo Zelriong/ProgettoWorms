@@ -11,9 +11,7 @@ public enum TimeStatus
 
 public class GameManager : MonoBehaviour
 {
-    [Header("SFX")]
-    [SerializeField] AudioClip death;
-    [SerializeField] AudioClip[] eliminate;
+    
 
     private TurnManager tm;
 
@@ -127,9 +125,7 @@ public class GameManager : MonoBehaviour
                     float health = player.currentHealth;
                     if (player.currentHealth <= 0f)
                     {
-                        SoundFXManager.instance.PlaySoundFXClip(death, transform, 1f);
-                        int rand = UnityEngine.Random.Range(0, eliminate.Length);
-                        SoundFXManager.instance.PlaySoundFXClip(eliminate[rand], transform, 1f);
+                        
                         health = 0f;
                     }
                     p1Health += health;
@@ -142,7 +138,7 @@ public class GameManager : MonoBehaviour
 
             if (totalP1Health <= 0f)
             {
-                SoundFXManager.instance.PlaySoundFXClip(death, transform, 1f);
+                
                 onBlueTeamWin?.Invoke();
             }
         }

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
 public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
 {
@@ -9,10 +10,16 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
     
     public float maxHealth = 100f;
     public float currentHealth;
-    
+
+    [Header("SFX")]
+    [SerializeField] AudioClip[] ouch;
+    [SerializeField] AudioClip death;
+    [SerializeField] AudioClip[] eliminate;
+
     [SerializeField] private bool isP1;
     [SerializeField] private int listIndex;
     [SerializeField] private TMP_Text healthTxt;
+
     
     public static event Action<bool> onDamageTaken;
 
@@ -33,6 +40,8 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
         currentHealth -= damage / distance;
         healthTxt.text = Mathf.RoundToInt(currentHealth).ToString();
         onDamageTaken?.Invoke(isP1);
+        int rand = UnityEngine.Random.Range(0, ouch.Length);
+        SoundFXManager.instance.PlaySoundFXClip(ouch[rand], transform, 1f);
         if (currentHealth <= 0)
         {
             Despawn();
@@ -47,6 +56,9 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
     public void Despawn()
     {
         tm.RemoveObjectFromList(isP1, listIndex);
+        SoundFXManager.instance.PlaySoundFXClip(death, transform, 1f);
+        int rand = UnityEngine.Random.Range(0, eliminate.Length);
+        SoundFXManager.instance.PlaySoundFXClip(eliminate[rand], transform, 1f);
         gameObject.SetActive(false);
     }
 
