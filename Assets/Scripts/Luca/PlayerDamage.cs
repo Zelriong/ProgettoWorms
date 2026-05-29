@@ -5,6 +5,7 @@ using TMPro;
 public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
 {
     private TurnManager tm;
+    private Bullet bullet;
     Rigidbody2D rb;
     CapsuleCollider2D capsuleCollider2d;
     [SerializeField] private Animator anim;
@@ -31,6 +32,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
         rb = GetComponent<Rigidbody2D>();
         tm = FindAnyObjectByType<TurnManager>();
         capsuleCollider2d = GetComponent<CapsuleCollider2D>();
+        bullet = FindAnyObjectByType<Bullet>();
     }
 
     private void Start()
@@ -78,6 +80,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
         SoundFXManager.instance.PlaySoundFXClip(death, transform, 1f);
         int rand = UnityEngine.Random.Range(0, eliminate.Length);
         SoundFXManager.instance.PlaySoundFXClip(eliminate[rand], transform, 1f);
+        bullet.Explode();
         gameObject.SetActive(false);
     }
 

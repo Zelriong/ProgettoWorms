@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93cebec13c80bc74088b4f72c55e70b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  damage: 15
+  damage: 40
   explosion: {fileID: 8300000, guid: 956ac9ca1f2d6e4478043122d194306c, type: 3}
   hit:
   - {fileID: 8300000, guid: 64def357b4d13c8459b6077f38ca8e74, type: 3}
@@ -128,7 +128,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 149ba3ed161703f49baa2163558d627a, type: 3}
   m_destuctionRadius: 2.5
   m_damageRadius: 3
-  m_damage: 30
+  m_damage: 40
   m_knockbackPower: 10
   m_explosionEffect: {fileID: 3543256473681361170, guid: fc635c0b27baafd47896749a5b3eb6a0, type: 3}
 --- !u!1 &6272384776693107673

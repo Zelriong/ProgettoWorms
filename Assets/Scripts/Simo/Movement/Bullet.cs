@@ -70,7 +70,7 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void Explode()
+    public void Explode()
     {
         Vector2 worldPosition = transform.position;
         m_destructibleTerrain.DestroyTerrainAt(worldPosition, m_destuctionRadius);
