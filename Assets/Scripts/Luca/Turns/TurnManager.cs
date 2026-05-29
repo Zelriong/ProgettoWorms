@@ -46,6 +46,8 @@ public class TurnManager : MonoBehaviour
 
         //occurs when turn timer finishes
         GameManager.onTurnTimerFinished += UpdateTurn;
+
+        PlayerDamage.onDeath += OnExplosion;
     }
 
     private void OnDisable()
@@ -53,6 +55,8 @@ public class TurnManager : MonoBehaviour
         Bullet.onMissileExplosion -= OnExplosion;
 
         GameManager.onTurnTimerFinished -= UpdateTurn;
+        
+        PlayerDamage.onDeath -= OnExplosion;
     }
     
     private void Start()

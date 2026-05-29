@@ -26,6 +26,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
 
     
     public static event Action<bool> onDamageTaken;
+    public static event Action onDeath;
 
     private void Awake()
     {
@@ -81,6 +82,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
         int rand = UnityEngine.Random.Range(0, eliminate.Length);
         SoundFXManager.instance.PlaySoundFXClip(eliminate[rand], transform, 1f);
         //bullet.Explode();
+        onDeath?.Invoke();
         gameObject.SetActive(false);
     }
 
