@@ -41,9 +41,9 @@ public class Bullet : MonoBehaviour
     private void OnEnable()
     {
         if (player.direction == 1f)
-            rb.AddForce(-transform.up * player.launchDirection * (power/5), ForceMode2D.Impulse);
+            rb.AddForce(-transform.up * player.launchDirection * (power/3.5f), ForceMode2D.Impulse);
         else 
-            rb.AddForce(-transform.right * player.launchDirection * (power/5), ForceMode2D.Impulse);
+            rb.AddForce(-transform.right * player.launchDirection * (power/3.5f), ForceMode2D.Impulse);
     }
 
     private void Update()
