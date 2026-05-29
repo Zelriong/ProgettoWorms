@@ -125,7 +125,6 @@ public class GameManager : MonoBehaviour
                     float health = player.currentHealth;
                     if (player.currentHealth <= 0f)
                     {
-                        
                         health = 0f;
                     }
                     p1Health += health;
@@ -136,7 +135,7 @@ public class GameManager : MonoBehaviour
             
             onP1HealthUpdated?.Invoke(p1Health, totalP1Health);
 
-            if (totalP1Health <= 0f)
+            if (p1Health <= 0f)
             {
                 
                 onBlueTeamWin?.Invoke();
@@ -163,7 +162,7 @@ public class GameManager : MonoBehaviour
             
             onP2HealthUpdated?.Invoke(p2Health, totalP2Health);
 
-            if(totalP2Health <= 0f)
+            if(p2Health <= 0f)
                 onRedTeamWin?.Invoke();
             
         }

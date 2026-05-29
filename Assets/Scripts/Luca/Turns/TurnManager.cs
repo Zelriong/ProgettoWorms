@@ -155,6 +155,9 @@ public class TurnManager : MonoBehaviour
             {
                 p1TurnIndex = 0;
             }
+
+            if (p1TurnList.Count <= 0)
+                return;
             ChangeWormReference(p1TurnList[p1TurnIndex]);
         }
         else
@@ -164,6 +167,8 @@ public class TurnManager : MonoBehaviour
             {
                 p2TurnIndex = 0;
             }
+            if (p2TurnList.Count <= 0)
+                return;
             ChangeWormReference(p2TurnList[p2TurnIndex]);
         }
         
