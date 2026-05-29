@@ -11,6 +11,10 @@ public class Bullet : MonoBehaviour
     Rigidbody2D rb;
     PlayerMovement player;
     float power;
+
+    [Header("SFX")]
+    [SerializeField] AudioClip explosion;
+    [SerializeField] AudioClip[] hit;
     
     [Header("Explosion")]
     [SerializeField] private float m_destuctionRadius;
@@ -20,6 +24,8 @@ public class Bullet : MonoBehaviour
     [SerializeField] private GameObject m_explosionEffect;
     
     public static event Action onMissileExplosion;
+
+    
 
     //float timer;
 
@@ -46,7 +52,7 @@ public class Bullet : MonoBehaviour
 
          Vector2 v = rb.linearVelocity;
          float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
-         Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle).normalized;
+         Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
          transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360f * Time.deltaTime);
 
          //if (timer > 5) Explode();
@@ -81,13 +87,15 @@ public class Bullet : MonoBehaviour
                     distance = 1f;
                 damageable.TakeDamage(m_damage, distance);
                 damageable.Knockback(direction, m_knockbackPower, distance);
+                int rand = UnityEngine.Random.Range(0, hit.Length);
+                SoundFXManager.instance.PlaySoundFXClip(hit[rand], transform, 1f);
             }
         }
         #endregion
         
         onMissileExplosion?.Invoke();
-        
-        
+        SoundFXManager.instance.PlaySoundFXClip(explosion, transform, 1f);
+
 
         if (explosionPooler == null)
             return;

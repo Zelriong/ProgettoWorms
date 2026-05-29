@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     CapsuleCollider2D capsuleCollider2d;
     private Vector3 wormSpriteScale;
-    
+
     [Header("Movimento")]
     [SerializeField] float movementSpeed;
     [SerializeField] private float moveEnergy;
@@ -37,7 +37,15 @@ public class PlayerMovement : MonoBehaviour
     private float minPower;
     [SerializeField] float maxPower = 250;
     public Vector2 launchDirection;
-    
+
+
+    [Header("SFX")]
+    [SerializeField] AudioClip _charging;
+    [SerializeField] AudioClip[] jumping;
+    [SerializeField] AudioClip walk;
+    [SerializeField] AudioClip[] shooting;
+    [SerializeField] AudioClip[] wormSelected;
+
     //Vector2 moveDirection;
 
     float isJumping;
@@ -47,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask mask;
 
     public float direction;
-    
+    float cd = 0;
     GameState state;
 
     public static event Action onPlayerMove;
@@ -64,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
         InputManager.OnCancel += CancelShooting;
         InputManager.OnCharging += Shot;
         InputManager.OnShooting += StopShooting;
+
 
         TurnManager.onWormRefChanged += ChangeWormRef;
     }
@@ -82,19 +91,19 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         state = GameState.moving;
-        
+
         aim.SetActive(false);
         aimCharge.gameObject.SetActive(false);
-        
+
         direction = 1;
 
         minPower = maxPower / 10;
-        
-        wormSpriteScale = new Vector3(wormSpriteObj.transform.localScale.x, 
-                    wormSpriteObj.transform.localScale.y, 
+
+        wormSpriteScale = new Vector3(wormSpriteObj.transform.localScale.x,
+                    wormSpriteObj.transform.localScale.y,
                     wormSpriteObj.transform.localScale.z);
     }
-    
+
     private void Update()
     {
         //isJumping = InputManager.instance.inputs.Player.Jump.ReadValue<float>();
@@ -102,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
         if (InputManager.IsMoving(out Vector2 moveDirection))
         {
             if (moveDirection.x < 0) { direction = -1; } // se ci sportiamo a sx si gira a sx
-            
+
             else if (moveDirection.x > 0) { direction = 1; } // se ci giriamo a dx si gira a dx
         }
 
@@ -111,25 +120,25 @@ public class PlayerMovement : MonoBehaviour
 
         wormSpriteObj.transform.localScale = new Vector3(wormSpriteScale.x * direction, wormSpriteScale.y, wormSpriteScale.z);    //la scale va in base alla direction
 
-        transform.localScale = new Vector3(direction, 
-                                transform.localScale.y, 
+        transform.localScale = new Vector3(direction,
+                                transform.localScale.y,
                                 transform.localScale.z);
-        
+
         gameObject.transform.position = controlledWorm.transform.position;
-        
+
         //runs only when right click is held
         if (state == GameState.aiming)
         {
             RegulateAim();
         }
-        
+
         //runs only when left click is held
         if (state == GameState.shooting)
         {
             RegulateForce();
         }
     }
-    
+
     private void RegulateAim()
     {
         if (InputManager.IsMoving(out Vector2 moveDirection))
@@ -151,10 +160,10 @@ public class PlayerMovement : MonoBehaviour
         {
             rotationValue = 0f;
         }
-        
+
         Vector3 rotateZ = new Vector3(0f, 0f, rotationValue);
         aim.transform.Rotate(rotateZ);
-        
+
         //Debug.Log(aim.transform.rotation.eulerAngles.z);
 
         //locks rotation from going over 180 degrees in one direction
@@ -172,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
             else if (aim.transform.rotation.eulerAngles.z >= 269.5f)
                 aim.transform.rotation = Quaternion.Euler(0, 0, 269.5f);
         }
-        
+
         // if (aim.transform.rotation.eulerAngles.z >= 179.5f)
         //     aim.transform.rotation = Quaternion.Euler(0, 0, 179.5f);
         // else if (aim.transform.rotation.eulerAngles.z <= 0.5f)
@@ -203,15 +212,23 @@ public class PlayerMovement : MonoBehaviour
     {
         if (IsGrounded() && state == GameState.moving && currentEnergy > 0f) Move();
     }
-    
+
     void Move()
     {
         if (InputManager.IsMoving(out Vector2 moveDirection))
         {
             onPlayerMove?.Invoke();
             currentEnergy -= Time.fixedDeltaTime;
-            //rb.linearVelocity = new Vector2(moveDirection.x * movementSpeed * Time.fixedDeltaTime, 0f);
             
+            cd += Time.fixedDeltaTime;
+
+            if (cd > walk.length/2) //cooldown per evitare che le clip "clippino"
+            {
+                SoundFXManager.instance.PlaySoundFXClip(walk, transform, 1f);
+                cd = 0f;
+            }
+            //rb.linearVelocity = new Vector2(moveDirection.x * movementSpeed * Time.fixedDeltaTime, 0f);
+
             Vector2 horMove = new Vector2(moveDirection.x, 0f);
             rb.MovePosition(rb.position + horMove * (movementSpeed * Time.fixedDeltaTime));
         }
@@ -222,7 +239,7 @@ public class PlayerMovement : MonoBehaviour
         /*bool isGrounded*/
         ;
         RaycastHit2D rayHit = Physics2D.CapsuleCast(capsuleCollider2d.bounds.center,
-            capsuleCollider2d.bounds.size, 
+            capsuleCollider2d.bounds.size,
             0f, 0f, Vector2.down, 0.1f, mask);
 
         //Collider2D colliders = Physics2D.OverlapCircle(boxCollider2d.bounds.center, 1f, 6);
@@ -239,18 +256,23 @@ public class PlayerMovement : MonoBehaviour
         if (!IsGrounded() || state != GameState.moving)
             return;
         rb.AddForce(new Vector2(0.8f * direction, 1f) * jumpForce, ForceMode2D.Impulse);
+        int rand = UnityEngine.Random.Range(0, jumping.Length);
+        SoundFXManager.instance.PlaySoundFXClip(jumping[rand], transform, 1f);
+        Debug.Log(rand);
     }
 
     //on right click start
     private void IsShooting()
     {
-        
+
         if (IsGrounded() && state == GameState.moving && canShoot)
         {
             state = GameState.aiming;
             aim.transform.position = controlledWorm.transform.position;
             aim.SetActive(true);
             //StartCoroutine(Shooting());
+            int rand = UnityEngine.Random.Range(0, shooting.Length);
+            SoundFXManager.instance.PlaySoundFXClip(shooting[rand], transform, 1f);
         }
     }
 
@@ -258,7 +280,7 @@ public class PlayerMovement : MonoBehaviour
     private void CancelShooting()
     {
         if (state != GameState.aiming) return;
-        
+
         aim.SetActive(false);
         aimCharge.gameObject.SetActive(false);
         state = GameState.moving;
@@ -268,10 +290,11 @@ public class PlayerMovement : MonoBehaviour
     private void Shot()
     {
         if (state != GameState.aiming) return;
-        
+
         //charging = true;
         state = GameState.shooting;
         aimCharge.gameObject.SetActive(true);
+        SoundFXManager.instance.PlaySoundFXClip(_charging, transform, 1f);
         //StartCoroutine(Shoot());
     }
 
@@ -279,15 +302,15 @@ public class PlayerMovement : MonoBehaviour
     private void StopShooting()
     {
         if (state != GameState.shooting) return;
-        
+
         //charging = false;
         aim.SetActive(false);
         aimCharge.gameObject.SetActive(false);
 
         launchDirection = (spawnPoint.transform.position - controlledWorm.transform.position).normalized;
-        
+
         Instantiate(bullet, spawnPoint.transform.position, aim.transform.rotation);
-        
+
         state = GameState.moving; //poi da cambiare in "fineTurno"
 
         power = 0f;
@@ -301,12 +324,16 @@ public class PlayerMovement : MonoBehaviour
             rb = wormRB;
         if (worm.TryGetComponent(out CapsuleCollider2D wormCollider))
             capsuleCollider2d = wormCollider;
-        
+
         SpriteRenderer wormSprite = worm.GetComponentInChildren<SpriteRenderer>();
         wormSpriteObj = wormSprite.gameObject;
 
         currentEnergy = moveEnergy;
         canShoot = true;
+
+        int rand = UnityEngine.Random.Range(0, wormSelected.Length);
+        SoundFXManager.instance.PlaySoundFXClip(wormSelected[rand] , transform, 1f);
+
     }
 
     // IEnumerator Shooting()

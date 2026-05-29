@@ -5,7 +5,7 @@ public static class InputManager
 {
     private static PlayerInputs inputs;
 
-    public static event Action OnJump, OnAiming, OnCharging, OnShooting, OnCancel;
+    public static event Action OnJump, OnAiming, OnCharging, OnShooting, OnCancel, OnPause;
 
     // public static event Action OnPauseRequested;
     // public static Action OnPauseAllowed;
@@ -20,7 +20,7 @@ public static class InputManager
         inputs.Player.BackFromShooting.canceled += _ => OnCancel?.Invoke();
         inputs.Player.Shoot.performed += _ => OnCharging?.Invoke();
         inputs.Player.Shoot.canceled += _ => OnShooting?.Invoke();
-
+        inputs.Player.Pause.performed += _ => OnPause?.Invoke();
         // inputs.Player.Pause.performed += _ => OnPauseRequested?.Invoke();
         // OnPauseAllowed += SwitchTo_UI;
     }

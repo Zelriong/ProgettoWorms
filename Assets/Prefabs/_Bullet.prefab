@@ -212,6 +212,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   damage: 15
+  explosion: {fileID: 8300000, guid: 956ac9ca1f2d6e4478043122d194306c, type: 3}
+  hit:
+  - {fileID: 8300000, guid: 64def357b4d13c8459b6077f38ca8e74, type: 3}
+  - {fileID: 8300000, guid: 047f8579c9bc3f34d85fdb0fadd5a52a, type: 3}
+  - {fileID: 8300000, guid: 149ba3ed161703f49baa2163558d627a, type: 3}
   m_destuctionRadius: 2.5
   m_damageRadius: 3
   m_damage: 30

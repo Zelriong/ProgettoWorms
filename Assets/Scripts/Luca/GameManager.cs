@@ -1,9 +1,20 @@
 using System;
+
 using UnityEngine;
+public enum TimeStatus
+{
+    Running,
+    Stopped
+}
 
 [DefaultExecutionOrder(-100)]
+
 public class GameManager : MonoBehaviour
 {
+    [Header("SFX")]
+    [SerializeField] AudioClip death;
+    [SerializeField] AudioClip[] eliminate;
+
     private TurnManager tm;
 
     private float totalP1Health = 0f;
@@ -13,13 +24,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float turnTimer = 30f;
     private float currentTurnTimer;
 
+
+
     public static event Action<float> onGameTimerChange, onTurnTimerChange;
     public static event Action onTurnTimerFinished;
     public static event Action<float, float> onP1HealthUpdated, onP2HealthUpdated;
+    public static event Action onBlueTeamWin;
+    public static event Action onRedTeamWin;
 
+    public TimeStatus timeStatus; 
     private void Awake()
     {
         tm = FindAnyObjectByType<TurnManager>();
+        timeStatus = TimeStatus.Running;
     }
 
     private void OnEnable()
@@ -55,6 +72,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if(timeStatus == TimeStatus.Stopped) Time.timeScale = 0f; //per stoppare il tempo in game durante la pausa
+        else Time.timeScale = 1f;
+
         gameTimer += Time.deltaTime;
         onGameTimerChange?.Invoke(gameTimer);
 
@@ -106,8 +126,12 @@ public class GameManager : MonoBehaviour
                 {
                     float health = player.currentHealth;
                     if (player.currentHealth <= 0f)
+                    {
+                        SoundFXManager.instance.PlaySoundFXClip(death, transform, 1f);
+                        int rand = UnityEngine.Random.Range(0, eliminate.Length);
+                        SoundFXManager.instance.PlaySoundFXClip(eliminate[rand], transform, 1f);
                         health = 0f;
-
+                    }
                     p1Health += health;
                 }
             }
@@ -115,6 +139,12 @@ public class GameManager : MonoBehaviour
             //Controllo se la vita arriva a 0 per fine gioco
             
             onP1HealthUpdated?.Invoke(p1Health, totalP1Health);
+
+            if (totalP1Health <= 0f)
+            {
+                SoundFXManager.instance.PlaySoundFXClip(death, transform, 1f);
+                onBlueTeamWin?.Invoke();
+            }
         }
         else
         {
@@ -135,6 +165,9 @@ public class GameManager : MonoBehaviour
             //stessa cosa qui
             
             onP2HealthUpdated?.Invoke(p2Health, totalP2Health);
+
+            if(totalP2Health <= 0f)
+                onRedTeamWin?.Invoke();
         }
     }
 }
