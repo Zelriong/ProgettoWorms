@@ -216,4 +216,4 @@ MonoBehaviour:
   m_damageRadius: 3
   m_damage: 30
   m_knockbackPower: 10
-  m_explosionEffect: {fileID: 0}
+  m_explosionEffect: {fileID: 3543256473681361170, guid: fc635c0b27baafd47896749a5b3eb6a0, type: 3}

@@ -112,6 +112,8 @@ public class GameManager : MonoBehaviour
                 }
             }
             
+            //Controllo se la vita arriva a 0 per fine gioco
+            
             onP1HealthUpdated?.Invoke(p1Health, totalP1Health);
         }
         else
@@ -129,6 +131,8 @@ public class GameManager : MonoBehaviour
                     p2Health += health;
                 }
             }
+            
+            //stessa cosa qui
             
             onP2HealthUpdated?.Invoke(p2Health, totalP2Health);
         }

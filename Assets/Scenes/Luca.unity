@@ -2563,7 +2563,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc158a6972cdc214d81f62f3812fe4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplosionPooler
-  explosionVFX: {fileID: 8979316832891475537, guid: e017024156c61b64cad67f4381ab83cc, type: 3}
+  explosionVFX: {fileID: 3543256473681361170, guid: fc635c0b27baafd47896749a5b3eb6a0, type: 3}
 --- !u!1 &1465642650
 GameObject:
   m_ObjectHideFlags: 0

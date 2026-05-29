@@ -42,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
 
     float isJumping;
     bool charging;
+    private bool canShoot;
 
     public LayerMask mask;
 
@@ -244,7 +245,7 @@ public class PlayerMovement : MonoBehaviour
     private void IsShooting()
     {
         
-        if (IsGrounded() && state == GameState.moving)
+        if (IsGrounded() && state == GameState.moving && canShoot)
         {
             state = GameState.aiming;
             aim.transform.position = controlledWorm.transform.position;
@@ -290,6 +291,7 @@ public class PlayerMovement : MonoBehaviour
         state = GameState.moving; //poi da cambiare in "fineTurno"
 
         power = 0f;
+        canShoot = false;
     }
 
     private void ChangeWormRef(GameObject worm)
@@ -304,6 +306,7 @@ public class PlayerMovement : MonoBehaviour
         wormSpriteObj = wormSprite.gameObject;
 
         currentEnergy = moveEnergy;
+        canShoot = true;
     }
 
     // IEnumerator Shooting()
