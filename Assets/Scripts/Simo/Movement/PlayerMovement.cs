@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     CapsuleCollider2D capsuleCollider2d;
     private Vector3 wormSpriteScale;
+    [SerializeField] private Animator animator;
 
     [Header("Movimento")]
     [SerializeField] float movementSpeed;
@@ -210,28 +211,42 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsGrounded() && state == GameState.moving && currentEnergy > 0f) Move();
-    }
-
-    void Move()
-    {
         if (InputManager.IsMoving(out Vector2 moveDirection))
         {
-            onPlayerMove?.Invoke();
-            currentEnergy -= Time.fixedDeltaTime;
-            
-            cd += Time.fixedDeltaTime;
-
-            if (cd > walk.length/2) //cooldown per evitare che le clip "clippino"
-            {
-                SoundFXManager.instance.PlaySoundFXClip(walk, transform, 1f);
-                cd = 0f;
-            }
-            //rb.linearVelocity = new Vector2(moveDirection.x * movementSpeed * Time.fixedDeltaTime, 0f);
-
-            Vector2 horMove = new Vector2(moveDirection.x, 0f);
-            rb.MovePosition(rb.position + horMove * (movementSpeed * Time.fixedDeltaTime));
+            if (IsGrounded() && state == GameState.moving && currentEnergy > 0f) Move(moveDirection);
         }
+        else if (IsGrounded())
+        {
+            animator.SetBool("IsJumping", false);
+            animator.SetBool("IsMoving", false);
+            animator.SetBool("IsTakingDamage", false);
+        }
+        else
+        {
+            animator.SetBool("IsJumping", true);
+            animator.SetBool("IsMoving", false);
+        }
+    }
+
+    void Move(Vector2 moveDirection)
+    {
+        animator.SetBool("IsMoving", true);
+        onPlayerMove?.Invoke();
+        currentEnergy -= Time.fixedDeltaTime;
+        
+        cd += Time.fixedDeltaTime;
+
+        if (cd > walk.length/2) //cooldown per evitare che le clip "clippino"
+        {
+            SoundFXManager.instance.PlaySoundFXClip(walk, transform, 1f);
+            cd = 0f;
+        }
+        //rb.linearVelocity = new Vector2(moveDirection.x * movementSpeed * Time.fixedDeltaTime, 0f);
+
+        Vector2 horMove = new Vector2(moveDirection.x, 0f);
+        rb.MovePosition(rb.position + horMove * (movementSpeed * Time.fixedDeltaTime));
+        
+        //animator.SetBool("IsJumping", false);
     }
 
     private bool IsGrounded()
@@ -240,7 +255,7 @@ public class PlayerMovement : MonoBehaviour
         ;
         RaycastHit2D rayHit = Physics2D.CapsuleCast(capsuleCollider2d.bounds.center,
             capsuleCollider2d.bounds.size,
-            0f, 0f, Vector2.down, 0.1f, mask);
+            0f, 0f, Vector2.down, 0.15f, mask);
 
         //Collider2D colliders = Physics2D.OverlapCircle(boxCollider2d.bounds.center, 1f, 6);
 
@@ -253,12 +268,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
-        if (!IsGrounded() || state != GameState.moving)
+        if (!IsGrounded() || state != GameState.moving || currentEnergy <= 0f)
             return;
         rb.AddForce(new Vector2(0.8f * direction, 1f) * jumpForce, ForceMode2D.Impulse);
         int rand = UnityEngine.Random.Range(0, jumping.Length);
         SoundFXManager.instance.PlaySoundFXClip(jumping[rand], transform, 1f);
-        Debug.Log(rand);
+        //animator.SetBool("IsJumping", true);
     }
 
     //on right click start
@@ -319,6 +334,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void ChangeWormRef(GameObject worm)
     {
+        if (animator != null)
+        {
+            animator.SetBool("IsMoving", false);
+            animator.SetBool("IsJumping", false);
+            animator.SetBool("IsTakingDamage", false);
+        }
+        
         controlledWorm = worm;
         if (worm.TryGetComponent(out Rigidbody2D wormRB))
             rb = wormRB;
@@ -334,6 +356,7 @@ public class PlayerMovement : MonoBehaviour
         int rand = UnityEngine.Random.Range(0, wormSelected.Length);
         SoundFXManager.instance.PlaySoundFXClip(wormSelected[rand] , transform, 1f);
 
+        animator = worm.GetComponentInChildren<Animator>();
     }
 
     // IEnumerator Shooting()

@@ -66,7 +66,8 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        gameObject.SetActive(false);
+        onMissileExplosion?.Invoke();
+        Destroy(gameObject);
     }
 
     private void Explode()
@@ -89,6 +90,11 @@ public class Bullet : MonoBehaviour
                 damageable.Knockback(direction, m_knockbackPower, distance);
                 int rand = UnityEngine.Random.Range(0, hit.Length);
                 SoundFXManager.instance.PlaySoundFXClip(hit[rand], transform, 1f);
+
+                Animator anim = collider.GetComponentInChildren<Animator>();
+                
+                if (anim != null)
+                    anim.SetBool("IsTakingDamage", true);
             }
         }
         #endregion

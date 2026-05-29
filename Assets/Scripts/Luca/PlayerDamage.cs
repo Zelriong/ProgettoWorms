@@ -1,12 +1,15 @@
 using System;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
 
 public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
 {
-    Rigidbody2D rb;
     private TurnManager tm;
+    Rigidbody2D rb;
+    CapsuleCollider2D capsuleCollider2d;
+    [SerializeField] private Animator anim;
+    [SerializeField] private LayerMask mask;
+    private float waitForAnimation;
     
     public float maxHealth = 100f;
     public float currentHealth;
@@ -27,6 +30,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
     {
         rb = GetComponent<Rigidbody2D>();
         tm = FindAnyObjectByType<TurnManager>();
+        capsuleCollider2d = GetComponent<CapsuleCollider2D>();
     }
 
     private void Start()
@@ -35,13 +39,28 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
         healthTxt.text = currentHealth.ToString();
     }
 
+    // private void Update()
+    // {
+    //     if (IsGrounded() && waitForAnimation > 0f)
+    //     {
+    //         anim.SetBool("IsTakingDamage", false);
+    //     }
+    //     else
+    //     {
+    //         waitForAnimation -= Time.deltaTime;
+    //     }
+    //     
+    // }
+
     public void TakeDamage(float damage, float distance)
     {
+        waitForAnimation += 1f;
         currentHealth -= damage / distance;
         healthTxt.text = Mathf.RoundToInt(currentHealth).ToString();
         onDamageTaken?.Invoke(isP1);
         int rand = UnityEngine.Random.Range(0, ouch.Length);
         SoundFXManager.instance.PlaySoundFXClip(ouch[rand], transform, 1f);
+        
         if (currentHealth <= 0)
         {
             Despawn();
@@ -66,4 +85,12 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
     {
         listIndex = index;
     }
+    
+    // private bool IsGrounded()
+    // {
+    //     RaycastHit2D rayHit = Physics2D.CapsuleCast(capsuleCollider2d.bounds.center,
+    //         capsuleCollider2d.bounds.size,
+    //         0f, 0f, Vector2.down, 0.15f, mask);
+    //     return rayHit;
+    // }
 }
