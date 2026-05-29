@@ -70,7 +70,7 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Explode()
+    private void Explode()
     {
         Vector2 worldPosition = transform.position;
         m_destructibleTerrain.DestroyTerrainAt(worldPosition, m_destuctionRadius);
@@ -106,7 +106,5 @@ public class Bullet : MonoBehaviour
         if (explosionPooler == null)
             return;
         explosionPooler.GetExplosion(worldPosition, Quaternion.identity);
-
-       
     }
 }

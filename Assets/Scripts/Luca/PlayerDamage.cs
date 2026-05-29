@@ -56,7 +56,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
 
     public void TakeDamage(float damage, float distance)
     {
-        waitForAnimation += 1f;
+        //waitForAnimation += 1f;
         currentHealth -= damage / distance;
         healthTxt.text = Mathf.RoundToInt(currentHealth).ToString();
         onDamageTaken?.Invoke(isP1);
@@ -80,7 +80,7 @@ public class PlayerDamage : MonoBehaviour, IDamageable, IIndexable
         SoundFXManager.instance.PlaySoundFXClip(death, transform, 1f);
         int rand = UnityEngine.Random.Range(0, eliminate.Length);
         SoundFXManager.instance.PlaySoundFXClip(eliminate[rand], transform, 1f);
-        bullet.Explode();
+        //bullet.Explode();
         gameObject.SetActive(false);
     }
 

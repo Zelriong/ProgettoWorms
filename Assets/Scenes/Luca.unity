@@ -10147,61 +10147,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &1872905510
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1872905512}
-  - component: {fileID: 1872905511}
-  m_Layer: 0
-  m_Name: BulletReference
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1872905511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1872905510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93cebec13c80bc74088b4f72c55e70b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  damage: 40
-  explosion: {fileID: 8300000, guid: 956ac9ca1f2d6e4478043122d194306c, type: 3}
-  hit:
-  - {fileID: 8300000, guid: 64def357b4d13c8459b6077f38ca8e74, type: 3}
-  - {fileID: 8300000, guid: 047f8579c9bc3f34d85fdb0fadd5a52a, type: 3}
-  - {fileID: 8300000, guid: 149ba3ed161703f49baa2163558d627a, type: 3}
-  m_destuctionRadius: 2.5
-  m_damageRadius: 3
-  m_damage: 40
-  m_knockbackPower: 10
-  m_explosionEffect: {fileID: 3543256473681361170, guid: fc635c0b27baafd47896749a5b3eb6a0, type: 3}
---- !u!4 &1872905512
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1872905510}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.5984, y: 0, z: 14.08337}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1875215378
 GameObject:
   m_ObjectHideFlags: 0
@@ -12613,4 +12558,3 @@ SceneRoots:
   - {fileID: 149935084}
   - {fileID: 970463292}
   - {fileID: 403172834}
-  - {fileID: 1872905512}
